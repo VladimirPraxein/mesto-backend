@@ -20,7 +20,7 @@ const auth = require('./middlewares/auth');
 const NotFound = require('./errors/notFound');
 
 const { PORT = 3000 } = process.env;
-const { URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+const URL = 'mongodb://127.0.0.1:27017/mestodb';
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
