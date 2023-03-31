@@ -4,12 +4,12 @@ const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const cardsRouter = require('./routes/cards');
 const usersRouter = require('./routes/users');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const cors = require('./middlewares/cors');
 
 const { urlPattern } = require('./utils/constants');
 
@@ -29,6 +29,9 @@ const limiter = rateLimit({
 mongoose.set('strictQuery', true);
 
 const app = express();
+
+app.use(cors);
+
 app.use(limiter);
 app.use(helmet());
 app.use(bodyParser.json());
@@ -45,8 +48,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(requestLogger);
-
-app.use(cors);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
