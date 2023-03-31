@@ -5,12 +5,11 @@ const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
 const bodyParser = require('body-parser');
-
+const cors = require('cors');
 const cardsRouter = require('./routes/cards');
 const usersRouter = require('./routes/users');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const cors = require('./middlewares/cors');
 
 const { urlPattern } = require('./utils/constants');
 
@@ -20,23 +19,26 @@ const auth = require('./middlewares/auth');
 const NotFound = require('./errors/notFound');
 
 const { PORT = 3000 } = process.env;
+const app = express();
+mongoose.set('strictQuery', true);
 const URL = 'mongodb://127.0.0.1:27017/mestodb';
+
+app.use(cors);
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,
 });
-mongoose.set('strictQuery', true);
 
-const app = express();
-app.use(cors);
 app.use(limiter);
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json());
+app.use(cors);
 
 mongoose
   .connect(URL)
